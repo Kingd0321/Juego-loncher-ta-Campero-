@@ -1,41 +1,498 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <title> Memoria loncherita </title>
-  <link href="home.css" rel="stylesheet"> <!-- CSS file for styling-->
-  <script type="text/javascript" src="home.js"></script> <!-- JavaScript file -->
-</head>
-<!-- data-isopen : if a block is opened this attribute is changed to true else false
-data-islocked : if image of two blocks matched then both are locked and won't be locked
--->
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <title> Campero el Sabor del Hogar </title>
+  </head>
+  <body class="bg-secondary m-2">
+    <div id="principal" class="container bg-white">
+        <div class="row justify-content-center titulo-principal text-white">
+            <h1 class="h1"> AHORCADO POLLO CAMPERO </h1>
+        </div>
+        <div class="row">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <img id="imagen_ahorcado" src="img/0_fallos.png" class="estilo-imagen" alt="Imagen juego ahorcado">
+                </div>
+                <div id="palabra" class="row justify-content-center contenedor-letras-secreto">
+                </div>
+                <div class="row">
+                    <div class="container my-2 w-25">
+                        <div class="row justify-content-center rounded-top bg-morado text-white">
+                            Letras Fallidas
+                        </div>
+                        <div id="letras_fallidas"
+                            class="row align-content-center justify-content-center borde-morado rounded-bottom contenedor-letras">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<body onload="hideIntro ();">
-  <div class="intro">
-    <h3> Memoria loncherit<sub>The game.</sub></h3>
-  </div>
-
-  <div class="difficulty">
-    <ul class="difficulty-levels">
-      <li onclick="setDifficulty (1)">Easy</li>
-      <li onclick="setDifficulty (2)">Intermediate</li>
-      <li onclick="setDifficulty (3)">Difficult</li>
-    </ul>
-  </div>
-
-  <div class="modal">
-    <div class="alert-message">
-      <h3>Game Over!</h3>
-      <button onclick="hideModal (0)">Ok</button>
+        <div class="row justify-content-center bg-dark">
+            <div class="p-2 w-50">
+                <div class="row">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text ancho-etiqueta bg-success text-white"
+                                id="label_palabra_secreta">Palabra:</span>
+                        </div>
+                        <input id="palabra_secreta" type="text" class="form-control" placeholder="Escribe la palabra secreta y pulsa Iniciar"
+                            aria-describedby="label_palabra_secreta">
+                        <button id="boton_iniciar" class="btn btn-success ancho-boton">Iniciar</button>
+                    </div>
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text ancho-etiqueta bg-primary text-white"
+                                id="label_probar_letra">Letra:</span>
+                        </div>
+                        <input id="probar_letra" type="text" class="form-control" placeholder="Escribe la letra a probar"
+                            aria-describedby="label_probar_letra" maxlength="1" minlength="1" disabled>
+                        <button id="boton_probar" class="btn btn-primary ancho-boton" disabled>Probar</button>
+                    </div>
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text ancho-etiqueta bg-warning" id="label_adivinar">¿Ya
+                                sabes?</span>
+                        </div>
+                        <input id="adivinar" type="text" class="form-control" placeholder="Escribe la palabra que crees que es"
+                            aria-describedby="label_adivinar" disabled>
+                        <button id="boton_adivinar" class="btn btn-warning ancho-boton" disabled>Adivinar</button>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <button id="boton_finalizar" class="btn btn-danger ancho-boton align-self-end">Reiniciar</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div class="modal">
-    <div class="alert-message">
-      <h1>Restart game? All progress will be lost.</h1>
-      <button onclick="restartGame ()">Restart</button>
-      <button onclick="hideModal (1)">Cancel</button>
+    <!-- Mensaje Modal -->
+    <div class="modal fade" id="mensaje" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="etiqueta_mensaje"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="cuerpo_mensaje" class="modal-body">
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <script src="js/main.js"></script>
+.ancho-etiqueta {
+    width: 100px;
+}
 
-  <div class="container">
+.ancho-boton {
+    width: 100px;
+}
+
+.contenedor-letras {
+    min-height: 30px;
+}
+
+.contenedor-letras-secreto {
+    min-height: 45px;
+}
+
+.titulo-principal {
+    background: #1f1f1f;
+}
+
+.letra {
+    background: #4bb7c8;
+    border-radius: 10px;
+    color: #fff;
+    display: inline-block;
+    height: 40px;
+    width: 35px;
+    text-align: center;
+    margin-left: 2.5px;
+    margin-right: 2.5px;
+    font-size: 25px;    
+}
+
+.espacio {
+    display: inline-block;    
+    width: 30px;    
+}
+
+.letra-gane {
+    background: #27a745;    
+}
+
+.letra-perdida {
+    background: #dc3645;
+}
+
+.estilo-imagen {
+    height: 290px;
+}
+
+.bg-morado {
+    background: #612daf;
+}
+
+.borde-morado {
+    border: 1px solid #612daf;
+}
+$(document).ready(function () {
+    var fallos, aciertos, palabra_secreta, letras_probadas, letras_fallidas;
+
+    function inicializar() {
+        fallos = 0;
+        aciertos = 0;
+        palabra_secreta = '';
+        letras_probadas = '';
+        letras_fallidas = '';
+
+        $('#imagen_ahorcado').attr('src', 'http://drive.google.com/uc?export=view&id=123XEU0tV-JavXxVmk3wV42ygeW3tku1D');
+        $('#palabra').html('');
+        $('#letras_fallidas').html('');
+
+        $('#palabra_secreta').val('');
+        $('#probar_letra').val('');
+        $('#adivinar').val('');
+
+        $('#palabra_secreta').attr("disabled", false);
+        $('#palabra_secreta').attr("type", "text");
+        $('#boton_iniciar').attr("disabled", false);
+
+        $('#probar_letra').attr("disabled", true);
+        $('#boton_probar').attr("disabled", true);
+
+        $('#adivinar').attr("disabled", true);
+        $('#boton_adivinar').attr("disabled", true);
+
+        $('#palabra_secreta').focus();
+    }
+
+    function cadenaPermitida(cadena) {
+        let expresion = '';
+
+        cadena = cadena.toLowerCase();
+        expresion = /^[a-zñ ]+$/;
+
+        if (expresion.test(cadena)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function verificarLetraProbada(letra) {
+        letra = letra.toLowerCase();
+
+        if (letras_probadas.indexOf(letra) != -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function verificarLetra(letra) {
+        letra = letra.toLowerCase();
+
+        if (palabra_secreta.indexOf(letra) != -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function establecerEspacios() {
+        let html = '';
+
+        for (let i = 0; i < palabra_secreta.length; i++) {
+            if (palabra_secreta.charAt(i) == ' ') {
+                html += `
+                <span class='espacio'></span>
+                `;
+            } else {
+                html += `
+                <span class='letra'></span>
+                `;
+            }
+        }
+
+        $('#palabra').html(html);
+    }
+
+    function escribirSpan(indice, letra) {
+        let lista_span = $('span');
+
+        for (let i = 0; i < lista_span.length; i++) {
+            if (i == indice) {
+                lista_span[i].innerHTML = letra;
+            }
+        }
+    }
+    
+    function mostrarPalabra(opcion) {
+        let html = '';
+
+        for (let i = 0; i < palabra_secreta.length; i++) {
+
+            if (palabra_secreta.charAt(i) == ' ') {
+                html += `
+                    <span class='espacio'>${palabra_secreta.charAt(i)}</span>
+                `;
+            } else {
+                html += `
+                    <span class='letra letra-${opcion}'>${palabra_secreta.charAt(i)}</span>
+                `;
+            }
+        }
+
+        $('#palabra').html(html);
+    }
+
+    function incluirLetra(letra) {
+        let numero_span = 0;
+
+        letra = letra.toLowerCase();
+
+        for (let i = 0; i < palabra_secreta.length; i++) {
+            if (palabra_secreta.charAt(i) == letra) {
+                aciertos++;
+                escribirSpan(i, letra);
+                letras_probadas += letra;
+            }
+        }
+
+        if (aciertos == palabra_secreta.replace(new RegExp(' ', 'g'), '').length) {
+            gane();
+        }
+    }
+
+    function incluirFallo(letra) {
+        let div_letras_fallidas = $('#letras_fallidas'),
+            html = div_letras_fallidas.html();
+
+        letra = letra.toLowerCase();
+
+        fallos++;
+
+        letras_fallidas += letra;
+        letras_probadas += letra;
+	
+        if(fallos == 0){
+            $('#imagen_ahorcado').attr('src', 'http://drive.google.com/uc?export=view&id=123XEU0tV-JavXxVmk3wV42ygeW3tku1D');
+        }else if(fallos == 1){
+            $('#imagen_ahorcado').attr('src', 'http://drive.google.com/uc?export=view&id=1vFdlLQjzaq5_qHzPu88rZfolqFXR1zRb');            
+        }else if(fallos == 2){
+            $('#imagen_ahorcado').attr('src', 'http://drive.google.com/uc?export=view&id=1aexncQCP2hBh-7xaJvvL6YDKycmwaqWm');
+        }else if(fallos == 3){
+            $('#imagen_ahorcado').attr('src', 'http://drive.google.com/uc?export=view&id=1hcwei7UOJLP1pzi38kA6LS1OOmkz5Nhw');
+        }else if(fallos == 4){
+            $('#imagen_ahorcado').attr('src', 'http://drive.google.com/uc?export=view&id=18uD0wry0bfxGaq8Qiqg3BiordCNYuGV7');
+        }        
+
+        if (html == '') {
+            html = letra;
+        } else {
+            html += '-' + letra;
+        }
+
+        div_letras_fallidas.html(html);
+
+        if (fallos == 4) {
+            perdida();
+        }
+    }
+
+    function gane() {
+        $('#probar_letra').attr('disabled', true);
+        $('#boton_probar').attr('disabled', true);
+
+        $('#adivinar').attr('disabled', true);
+        $('#boton_adivinar').attr('disabled', true);
+
+        $('#imagen_ahorcado').attr('src', 'http://drive.google.com/uc?export=view&id=1H1nrBllxQbpBf5SAGXlUJjagsYFYW-VS');
+
+        mostrarPalabra('gane');
+    }
+
+    function perdida() {
+        $('#probar_letra').attr('disabled', true);
+        $('#boton_probar').attr('disabled', true);
+
+        $('#adivinar').attr('disabled', true);
+        $('#boton_adivinar').attr('disabled', true);
+
+        $('#imagen_ahorcado').attr('src', 'http://drive.google.com/uc?export=view&id=18uD0wry0bfxGaq8Qiqg3BiordCNYuGV7');
+        mostrarPalabra('perdida');
+    }
+
+    function iniciar() {
+        let input_palabra_secreta = $('#palabra_secreta');
+
+        if (input_palabra_secreta.val().length > 0) {
+            if (cadenaPermitida(input_palabra_secreta.val())) {
+                palabra_secreta = input_palabra_secreta.val().toLowerCase();
+
+                input_palabra_secreta.attr("disabled", true);
+                input_palabra_secreta.attr("type", "password");
+                $('#boton_iniciar').attr("disabled", true);
+
+                $('#probar_letra').attr("disabled", false);
+                $('#boton_probar').attr("disabled", false);
+
+                $('#adivinar').attr("disabled", false);
+                $('#boton_adivinar').attr("disabled", false);
+
+                establecerEspacios();
+
+                $('#probar_letra').focus();
+            } else {
+                $('#etiqueta_mensaje').html('Datos Incorrectos');
+                $('#cuerpo_mensaje').html('La palabra debe contener caracteres de la A a la Z únicamente.');
+                $('#mensaje').modal('show')
+
+                $('#mensaje').on('hidden.bs.modal', function () {
+                    input_palabra_secreta.val('');
+                    input_palabra_secreta.focus();
+                })
+            }
+        } else {
+            $('#etiqueta_mensaje').html('Datos Incorrectos');
+            $('#cuerpo_mensaje').html('Debe escribir la palabra secreta.');
+            $('#mensaje').modal('show')
+
+            $('#mensaje').on('hidden.bs.modal', function () {
+                input_palabra_secreta.focus();
+            })
+        }
+    }
+
+    function probarLetra() {
+        let input_probar_letra = $('#probar_letra');
+
+        if (input_probar_letra.val() != ' ') {
+            if (input_probar_letra.val().length > 0) {
+                if (cadenaPermitida(input_probar_letra.val())) {
+                    if (!verificarLetraProbada(input_probar_letra.val())) {
+                        if (verificarLetra(input_probar_letra.val())) {
+                            incluirLetra(input_probar_letra.val());
+                        } else {
+                            incluirFallo(input_probar_letra.val())
+                        }
+
+                        input_probar_letra.val('');
+                        input_probar_letra.focus();
+                    } else {
+                        $('#etiqueta_mensaje').html('Datos Incorrectos');
+                        $('#cuerpo_mensaje').html('La letra ya ha sido probada.');
+                        $('#mensaje').modal('show')
+
+                        $('#mensaje').on('hidden.bs.modal', function () {
+                            input_probar_letra.val('');
+                            input_probar_letra.focus();
+                        })
+                    }
+                } else {
+                    $('#etiqueta_mensaje').html('Datos Incorrectos');
+                    $('#cuerpo_mensaje').html('Sólo se permiten caracteres de la A a la Z únicamente.');
+                    $('#mensaje').modal('show')
+
+                    $('#mensaje').on('hidden.bs.modal', function () {
+                        input_probar_letra.val('');
+                        input_probar_letra.focus();
+                    })
+                }
+            } else {
+                $('#etiqueta_mensaje').html('Datos Incorrectos');
+                $('#cuerpo_mensaje').html('Debe escribir la letra a probar.');
+                $('#mensaje').modal('show')
+
+                $('#mensaje').on('hidden.bs.modal', function () {
+                    input_palabra_secreta.focus();
+                })
+            }
+        } else {
+            input_probar_letra.val('');
+            input_probar_letra.focus();
+        }
+    }
+
+    function adivinar() {
+        let input_adivinar = $('#adivinar');
+
+        if (input_adivinar.val().length > 0) {
+            if (cadenaPermitida(input_adivinar.val())) {
+                if (input_adivinar.val().toLowerCase() == palabra_secreta) {
+                    gane();
+                } else {
+                    perdida();
+                }
+            } else {
+                $('#etiqueta_mensaje').html('Datos Incorrectos');
+                $('#cuerpo_mensaje').html('Sólo se permiten caracteres de la A a la Z únicamente.');
+                $('#mensaje').modal('show')
+
+                $('#mensaje').on('hidden.bs.modal', function () {
+                    input_adivinar.val('');
+                    input_adivinar.focus();
+                })
+            }
+        } else {
+            $('#etiqueta_mensaje').html('Datos Incorrectos');
+            $('#cuerpo_mensaje').html('Debe escribir la palabra a adivinar.');
+            $('#mensaje').modal('show')
+
+            $('#mensaje').on('hidden.bs.modal', function () {
+                input_adivinar.focus();
+            })
+        }
+    }
+
+    function finalizar() {
+        inicializar();
+    }
+
+    function main() {
+        inicializar();
+        $('#boton_iniciar').click(iniciar);
+        $('#boton_probar').click(probarLetra);
+        $('#boton_finalizar').click(finalizar);
+        $('#boton_adivinar').click(adivinar);
+
+        $('#palabra_secreta').on("keydown", function (event) {
+            if (event.which == 13) {
+                iniciar();
+            }
+        });
+
+        $('#probar_letra').on("keydown", function (event) {
+            if (event.which == 13) {
+                probarLetra();
+            }
+        });
+
+        $('#adivinar').on("keydown", function (event) {
+            if (event.which == 13) {
+                adivinar();
+            }
+        });
+    }
+
+    main();
+});
+
+  </body>
+</html>
+ 
